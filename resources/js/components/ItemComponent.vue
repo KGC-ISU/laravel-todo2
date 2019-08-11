@@ -37,6 +37,7 @@
         methods:{
             complete(){
                 this.item.complete = true;
+                this.$root.comTodo(this.item.id);
             },
             del(){
                 this.$root.delTodo(this.item.id);

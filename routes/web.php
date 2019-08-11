@@ -20,6 +20,6 @@ Route::post('/login', 'UserController@login');
 Route::get('/logout', 'UserController@logout')->middleware('login');    //로그인한 사용자만 접근 가능
 
 Route::get('/todo', 'TodoController@getTodoList')->middleware('login'); //로그인한 사용자만 접근 가능
-Route::get('/comTodo', 'TodoController@comTodo')->middleware('login');    //로그인한 사용자만 접근 가능
-Route::get('/delTodo', 'TodoController@delTodo')->middleware('login');    //로그인한 사용자만 접근 가능
 Route::post('/todo', 'TodoController@postTodo')->middleware('login');    //로그인한 사용자만 접근 가능
+Route::post('/comTodo', 'TodoController@comTodo')->middleware('login');    //로그인한 사용자만 접근 가능
+Route::post('/delTodo', 'TodoController@delTodo')->middleware('login');    //로그인한 사용자만 접근 가능

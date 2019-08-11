@@ -76,17 +76,20 @@ const app = new Vue({
             this.list.push({id:this.data.id, name:name, date: new Date(date), complete:0});
         },
         comTodo(id) {
-
+            this.$http.post('/comTodo', {
+                id : id,
+            }).then( res => {
+                console.log(res);
+            });
         },
         delTodo(id){
             let idx = this.list.findIndex(x => x.id == id);
             this.list.splice(idx, 1);
 
-            this.$http.get('/delTodo', {
+            this.$http.post('/delTodo', {
                 id : id,
             }).then( res => {
-                const data = res.data;
-                alert(data.success);
+                console.log(res);
             });
         },
     },

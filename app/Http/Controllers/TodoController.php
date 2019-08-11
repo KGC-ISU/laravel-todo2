@@ -22,14 +22,17 @@ class TodoController extends Controller
 
     public function comTodo(Request $req)
     {
+        $id = $req->input('id');
+        DB::table('todos')->where('id', '=', $id)->update(['complete'=>1]);
 
+        return response()->json(['success'=>true, 'id'=>$id]);
     }
 
     public function delTodo(Request $req)
     {
         $id = $req->input('id');
-        DB::table('todos')->where('id', '==', $id)->delete();
+        DB::table('todos')->where('id', '=', $id)->delete();
 
-        return response()->json(['success'=>true]);
+        return response()->json(['success'=>true, 'id'=>$id]);
     }
 }
