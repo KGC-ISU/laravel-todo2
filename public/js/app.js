@@ -1735,41 +1735,36 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "CalendarComponent",
   created: function created() {
+    var _this = this;
+
     this.now = new Date();
     this.fillDate(this.now);
-    console.log(this.now.getFullYear() + " " + (this.now.getMonth() + 1) + " " + this.now.getDate());
+    this.$http.get('/todo').then(function (res) {
+      _this.todoList = res.data.list;
+    });
   },
   data: function data() {
     return {
       list: [],
+      todoList: [],
       now: null,
       status: true
     };
   },
   methods: {
     prevMonth: function prevMonth() {
-      var _this = this;
-
-      if (this.status == false) {} else {
-        this.status = false;
-        this.now.setMonth(this.now.getMonth() - 1);
-        this.list = [];
-        setTimeout(function () {
-          _this.fillDate(_this.now);
-
-          _this.status = true;
-        }, 500);
-      }
-    },
-    nextMonth: function nextMonth() {
       var _this2 = this;
 
       if (this.status == false) {} else {
         this.status = false;
-        this.now.setMonth(this.now.getMonth() + 1);
+        this.now.setMonth(this.now.getMonth() - 1);
         this.list = [];
         setTimeout(function () {
           _this2.fillDate(_this2.now);
@@ -1778,10 +1773,23 @@ __webpack_require__.r(__webpack_exports__);
         }, 500);
       }
     },
+    nextMonth: function nextMonth() {
+      var _this3 = this;
+
+      if (this.status == false) {} else {
+        this.status = false;
+        this.now.setMonth(this.now.getMonth() + 1);
+        this.list = [];
+        setTimeout(function () {
+          _this3.fillDate(_this3.now);
+
+          _this3.status = true;
+        }, 500);
+      }
+    },
     fillDate: function fillDate(now) {
       this.list = [];
       var first = now.getFirst();
-      console.log(first);
       var day = first.getDay(); //요일 알아내기
 
       first.addDay(-day);
@@ -1798,7 +1806,6 @@ __webpack_require__.r(__webpack_exports__);
           first.addDay(1);
         }
 
-        console.log(now.getMonth() + 1);
         this.list.push({
           id: id++,
           week: week
@@ -38234,14 +38241,31 @@ var render = function() {
               "div",
               { key: week.id, staticClass: "date-row" },
               _vm._l(week.week, function(item) {
-                return _c("div", { staticClass: "item" }, [
-                  _vm._v(
-                    "\n                    " +
-                      _vm._s(item.number) +
-                      "\n                    "
-                  ),
-                  _c("p")
-                ])
+                return _c(
+                  "div",
+                  { staticClass: "item" },
+                  [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(item.number) +
+                        "\n                    "
+                    ),
+                    _vm._l(_vm.todoList, function(todo) {
+                      return _c("div", [
+                        item.date == todo.date && todo.complete != 1
+                          ? _c("p", [
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(todo.name) +
+                                  "\n                        "
+                              )
+                            ])
+                          : _vm._e()
+                      ])
+                    })
+                  ],
+                  2
+                )
               }),
               0
             )

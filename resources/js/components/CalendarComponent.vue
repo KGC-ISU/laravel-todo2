@@ -28,7 +28,11 @@
                 <div class="date-row" v-for="week in list" :key="week.id">
                     <div class="item" v-for="item in week.week">
                         {{item.number}}
-                        <p></p>
+                        <div v-for="todo in todoList">
+                            <p v-if="item.date == todo.date && todo.complete != 1">
+                                {{todo.name}}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </transition-group>
@@ -42,11 +46,14 @@
         created(){
             this.now = new Date();
             this.fillDate(this.now);
-            console.log(this.now.getFullYear() + " " + (this.now.getMonth() + 1) + " " + this.now.getDate());
+            this.$http.get('/todo').then( res => {
+                this.todoList = res.data.list;
+            });
         },
         data(){
             return {
                 list:[],
+                todoList: [],
                 now:null,
                 status : true,
             }
@@ -81,7 +88,6 @@
             fillDate(now){
                 this.list = [];
                 let first = now.getFirst();
-                console.log(first);
                 let day = first.getDay(); //요일 알아내기
                 first.addDay(-day);
                 let id = 1;
@@ -91,7 +97,6 @@
                         week.push({date:first.gondr(), number:first.getDate()});
                         first.addDay(1);
                     }
-                    console.log(now.getMonth() + 1);
                     this.list.push({id:id++, week: week});
                     if(first.getMonth() != now.getMonth()){
                         break;
