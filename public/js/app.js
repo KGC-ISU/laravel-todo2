@@ -1721,77 +1721,95 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-window.onload = function () {
-  var today = new Date(); //오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
-
-  var date = new Date(); //today의 Date를 세어주는 역할
-
-  function prevCalendar() {
-    //이전 달
-    today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-    buildCalendar(); //달력 cell 만들어 출력
-  }
-
-  var prev = document.getElementById("prev").addEventListener("click", prevCalendar);
-
-  function nextCalendar() {
-    //다음 달
-    today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-    buildCalendar(); //달력 cell 만들어 출력
-  }
-
-  var next = document.getElementById("next").addEventListener("click", nextCalendar);
-
-  function buildCalendar() {
-    //현재 달 달력 만들기
-    var doMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    var lastDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    var tbCalendar = document.getElementById("calendar");
-    var tbCalendarYM = document.getElementById("tbCalendarYM");
-    tbCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";
-    /*while은 이번달이 끝나면 다음달로 넘겨주는 역할*/
-
-    while (tbCalendar.rows.length > 2) {
-      tbCalendar.deleteRow(tbCalendar.rows.length - 1);
-    }
-
-    var row = null;
-    row = tbCalendar.insertRow();
-    var cnt = 0;
-
-    for (var i = 0; i < doMonth.getDay(); i++) {
-      var cell = row.insertCell();
-      cnt = cnt + 1;
-    }
-    /*달력 출력*/
-
-
-    for (var _i = 1; _i <= lastDate.getDate(); _i++) {
-      var _cell = row.insertCell();
-
-      _cell.innerHTML = _i;
-      cnt = cnt + 1;
-
-      if (cnt % 7 == 1) {
-        _cell.innerHTML = "<font color='#ef5350'>" + _i + "</span>";
-      }
-
-      if (cnt % 7 == 0) {
-        _cell.innerHTML = "<font color='#42a5f5'>" + _i + "</font>";
-        row = calendar.insertRow();
-      }
-
-      if (today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth() && _i == date.getDate()) {
-        _cell.bgColor = "#FAF58C";
-      }
-    }
-  }
-
-  buildCalendar();
-};
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "CalendarComponent"
+  name: "CalendarComponent",
+  created: function created() {
+    this.now = new Date();
+    this.fillDate(this.now);
+    console.log(this.now.getFullYear() + " " + (this.now.getMonth() + 1) + " " + this.now.getDate());
+  },
+  data: function data() {
+    return {
+      list: [],
+      now: null,
+      status: true
+    };
+  },
+  methods: {
+    prevMonth: function prevMonth() {
+      var _this = this;
+
+      if (this.status == false) {} else {
+        this.status = false;
+        this.now.setMonth(this.now.getMonth() - 1);
+        this.list = [];
+        setTimeout(function () {
+          _this.fillDate(_this.now);
+
+          _this.status = true;
+        }, 500);
+      }
+    },
+    nextMonth: function nextMonth() {
+      var _this2 = this;
+
+      if (this.status == false) {} else {
+        this.status = false;
+        this.now.setMonth(this.now.getMonth() + 1);
+        this.list = [];
+        setTimeout(function () {
+          _this2.fillDate(_this2.now);
+
+          _this2.status = true;
+        }, 500);
+      }
+    },
+    fillDate: function fillDate(now) {
+      this.list = [];
+      var first = now.getFirst();
+      console.log(first);
+      var day = first.getDay(); //요일 알아내기
+
+      first.addDay(-day);
+      var id = 1;
+
+      while (true) {
+        var week = [];
+
+        for (var i = 0; i < 7; i++) {
+          week.push({
+            date: first.gondr(),
+            number: first.getDate()
+          });
+          first.addDay(1);
+        }
+
+        console.log(now.getMonth() + 1);
+        this.list.push({
+          id: id++,
+          week: week
+        });
+
+        if (first.getMonth() != now.getMonth()) {
+          break;
+        }
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -6596,7 +6614,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n#calendar[data-v-56bbe5f8] {\n    width: 100%;\n    border: 0;\n}\n.month-box[data-v-56bbe5f8] {\n    width: 100%;\n    height: 70px;\n    background-color: #66bb6a;\n    font-size: 1.5rem;\n    text-align: center;\n    color: #fff;\n    font-weight: bold;\n}\n#prev i[data-v-56bbe5f8] {\n    transform: rotate(180deg);\n}\ntd[data-v-56bbe5f8] {\n    width: 50px;\n    height: 50px;\n    text-align: center;\n    font-size: 20px;\n}\n", ""]);
+exports.push([module.i, "\n.now-date[data-v-56bbe5f8] {\n    background-color: #FFE0B2;\n}\n#dayList[data-v-56bbe5f8] {\n    margin-bottom: 40px;\n}\n#now-day[data-v-56bbe5f8] {\n    display: flex;\n    background-color: #4caf50;\n    width: 99.98%;\n}\n#now-day > div[data-v-56bbe5f8] {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    width: 15%;\n    height: 70px;\n    font-size: 2rem;\n    font-weight: bold;\n    color: #fff;\n}\n#now-day > .now-day[data-v-56bbe5f8] {\n    width: 70%;\n}\n.day-row[data-v-56bbe5f8] {\n    display:grid;\n    grid-template-columns:repeat(7, 1fr);\n    grid-template-rows:50px;\n    font-size: 1.1rem;\n    font-weight: bold;\n}\n.date-row[data-v-56bbe5f8] {\n    margin-top:5px;\n    grid-gap:10px;\n    display:grid;\n    grid-template-columns:repeat(7, 1fr);\n    grid-auto-rows:minmax(100px, auto);\n    padding:5px;\n}\n.day[data-v-56bbe5f8] {\n    display:flex;\n    justify-content:center;\n    align-items:center;\n    background-color: #4caf50;\n    color:#fff;\n}\n.item[data-v-56bbe5f8] {\n    box-shadow: 2px 2px 1px 1px rgba(0,0,0,0.2);\n    border-radius:0.2rem;\n    padding:10px;\n}\n\n", ""]);
 
 // exports
 
@@ -38176,57 +38194,90 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { attrs: { id: "dayList" } },
+      [
+        _c("div", { attrs: { id: "now-day" } }, [
+          _c("div", { staticClass: "prev", on: { click: _vm.prevMonth } }, [
+            _c("i", { staticClass: "fas fa-arrow-left" })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "now-day" }, [
+            _vm._v(
+              "\n                " +
+                _vm._s(
+                  this.now.getFullYear() +
+                    "년 " +
+                    (this.now.getMonth() + 1) +
+                    "월"
+                ) +
+                "\n            "
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "next", on: { click: _vm.nextMonth } }, [
+            _c("i", { staticClass: "fas fa-arrow-right" })
+          ])
+        ]),
+        _vm._v(" "),
+        _vm._m(1),
+        _vm._v(" "),
+        _c(
+          "transition-group",
+          { attrs: { name: "fade" } },
+          _vm._l(_vm.list, function(week) {
+            return _c(
+              "div",
+              { key: week.id, staticClass: "date-row" },
+              _vm._l(week.week, function(item) {
+                return _c("div", { staticClass: "item" }, [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(item.number) +
+                      "\n                    "
+                  ),
+                  _c("p")
+                ])
+              }),
+              0
+            )
+          }),
+          0
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("h1", [_vm._v("Calendar")]),
+    return _c("div", { staticClass: "logo" }, [_c("h1", [_vm._v("Calendar")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "day-row" }, [
+      _c("div", { staticClass: "day" }, [_vm._v("일")]),
       _vm._v(" "),
-      _c("table", { attrs: { id: "calendar", align: "center" } }, [
-        _c("tr", { staticClass: "month-box" }, [
-          _c("td", { attrs: { id: "prev" } }, [
-            _c("i", { staticClass: "fas fa-arrow-right" })
-          ]),
-          _vm._v(" "),
-          _c(
-            "td",
-            { attrs: { align: "center", id: "tbCalendarYM", colspan: "5" } },
-            [_vm._v("\n                yyyy년 m월\n            ")]
-          ),
-          _vm._v(" "),
-          _c("td", { attrs: { id: "next" } }, [
-            _c("i", { staticClass: "fas fa-arrow-right" })
-          ])
-        ]),
-        _vm._v(" "),
-        _c("tr", { staticClass: "week" }, [
-          _c(
-            "td",
-            { staticStyle: { color: "#ef5350" }, attrs: { align: "center" } },
-            [_vm._v("일")]
-          ),
-          _vm._v(" "),
-          _c("td", { attrs: { align: "center" } }, [_vm._v("월")]),
-          _vm._v(" "),
-          _c("td", { attrs: { align: "center" } }, [_vm._v("화")]),
-          _vm._v(" "),
-          _c("td", { attrs: { align: "center" } }, [_vm._v("수")]),
-          _vm._v(" "),
-          _c("td", { attrs: { align: "center" } }, [_vm._v("목")]),
-          _vm._v(" "),
-          _c("td", { attrs: { align: "center" } }, [_vm._v("금")]),
-          _vm._v(" "),
-          _c(
-            "td",
-            { staticStyle: { color: "#42a5f5" }, attrs: { align: "center" } },
-            [_vm._v("토")]
-          )
-        ])
-      ])
+      _c("div", { staticClass: "day" }, [_vm._v("월")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "day" }, [_vm._v("화")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "day" }, [_vm._v("수")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "day" }, [_vm._v("목")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "day" }, [_vm._v("금")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "day" }, [_vm._v("토")])
     ])
   }
 ]
@@ -53690,7 +53741,6 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
 
 Date.prototype.gondr = function () {
   var str = this.toLocaleDateString();
-  console.log(str);
   var arr = str.split(".");
   return arr.filter(function (x) {
     return x != "";
@@ -53699,6 +53749,22 @@ Date.prototype.gondr = function () {
     var dstr = "0" + x.trim();
     return dstr.substring(dstr.length - 2);
   }).join("-");
+};
+
+Date.prototype.getFirst = function () {
+  var temp = new Date(this.getFullYear(), this.getMonth(), this.getDate());
+  temp.setDate(1);
+  return temp;
+};
+
+Date.prototype.getLast = function () {
+  var temp = new Date(this.getFullYear(), this.getMonth() + 1, this.getDate());
+  temp.setDate(0);
+  return temp;
+};
+
+Date.prototype.addDay = function (value) {
+  this.setDate(this.getDate() + value);
 };
 
 var app = new Vue({
@@ -54329,8 +54395,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\dev\Laravel\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\dev\Laravel\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\dev\laravel-todo\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\dev\laravel-todo\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

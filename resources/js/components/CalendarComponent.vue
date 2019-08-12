@@ -1,120 +1,167 @@
 <template>
     <div>
-        <h1>Calendar</h1>
-        <table id="calendar" align="center">
-            <tr class="month-box">
-                <td id="prev"><i class="fas fa-arrow-right"></i></td>
-                <td align="center" id="tbCalendarYM" colspan="5">
-                    yyyy년 m월
-                </td>
-                <td id="next"><i class="fas fa-arrow-right"></i></td>
-            </tr>
-            <tr class="week">
-                <td align="center" style="color: #ef5350">일</td>
-                <td align="center">월</td>
-                <td align="center">화</td>
-                <td align="center">수</td>
-                <td align="center">목</td>
-                <td align="center">금</td>
-                <td align="center" style="color: #42a5f5">토</td>
-            </tr>
-        </table>
+        <div class="logo">
+            <h1>Calendar</h1>
+        </div>
+        <div id="dayList">
+            <div id="now-day">
+                <div @click="prevMonth" class="prev">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div class="now-day">
+                    {{this.now.getFullYear() + "년 " + (this.now.getMonth() + 1) + "월"}}
+                </div>
+                <div @click="nextMonth" class="next">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+            <div class="day-row">
+                <div class="day">일</div>
+                <div class="day">월</div>
+                <div class="day">화</div>
+                <div class="day">수</div>
+                <div class="day">목</div>
+                <div class="day">금</div>
+                <div class="day">토</div>
+            </div>
+            <transition-group name="fade">
+                <div class="date-row" v-for="week in list" :key="week.id">
+                    <div class="item" v-for="item in week.week">
+                        {{item.number}}
+                        <p></p>
+                    </div>
+                </div>
+            </transition-group>
+        </div>
     </div>
 </template>
 
 <script>
-
-    window.onload = function () {
-
-        let today = new Date();//오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
-        let date = new Date();//today의 Date를 세어주는 역할
-
-        function prevCalendar() {//이전 달
-            today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-            buildCalendar(); //달력 cell 만들어 출력
-        }
-
-        let prev = document.getElementById("prev").addEventListener("click", prevCalendar);
-
-        function nextCalendar() {//다음 달
-            today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-            buildCalendar();//달력 cell 만들어 출력
-        }
-
-        let next = document.getElementById("next").addEventListener("click", nextCalendar);
-
-        function buildCalendar(){//현재 달 달력 만들기
-            let doMonth = new Date(today.getFullYear(),today.getMonth(),1);
-            let lastDate = new Date(today.getFullYear(),today.getMonth()+1,0);
-            let tbCalendar = document.getElementById("calendar");
-            let tbCalendarYM = document.getElementById("tbCalendarYM");
-            tbCalendarYM.innerHTML = today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";
-
-            /*while은 이번달이 끝나면 다음달로 넘겨주는 역할*/
-            while (tbCalendar.rows.length > 2) {
-                tbCalendar.deleteRow(tbCalendar.rows.length-1);
-            }
-            let row = null;
-            row = tbCalendar.insertRow();
-            let cnt = 0;
-            for (let i=0; i<doMonth.getDay(); i++) {
-                let cell = row.insertCell();
-                cnt = cnt + 1;
-            }
-
-            /*달력 출력*/
-            for (let i=1; i<=lastDate.getDate(); i++) {
-                let cell = row.insertCell();
-                cell.innerHTML = i;
-                cnt = cnt + 1;
-                if (cnt % 7 == 1) {
-                    cell.innerHTML = "<font color='#ef5350'>" + i + "</span>";
-                }
-                if (cnt%7 == 0){
-                    cell.innerHTML = "<font color='#42a5f5'>" + i + "</font>";
-                    row = calendar.insertRow();
-                }
-                if (today.getFullYear() == date.getFullYear()
-                    && today.getMonth() == date.getMonth()
-                    && i == date.getDate()) {
-                    cell.bgColor = "#FAF58C";
-                }
-            }
-        }
-
-        buildCalendar();
-    }
-
     export default {
         name: "CalendarComponent",
-    }
+        created(){
+            this.now = new Date();
+            this.fillDate(this.now);
+            console.log(this.now.getFullYear() + " " + (this.now.getMonth() + 1) + " " + this.now.getDate());
+        },
+        data(){
+            return {
+                list:[],
+                now:null,
+                status : true,
+            }
+        },
+        methods:{
+            prevMonth(){
+                if(this.status == false) {
 
+                } else {
+                    this.status = false;
+                    this.now.setMonth(this.now.getMonth() - 1);
+                    this.list = [];
+                    setTimeout(()=>{
+                        this.fillDate(this.now);
+                        this.status = true;
+                    }, 500);
+                }
+            },
+            nextMonth(){
+                if(this.status == false) {
+
+                } else {
+                    this.status = false;
+                    this.now.setMonth(this.now.getMonth() + 1);
+                    this.list = [];
+                    setTimeout(()=>{
+                        this.fillDate(this.now);
+                        this.status = true;
+                    }, 500);
+                }
+            },
+            fillDate(now){
+                this.list = [];
+                let first = now.getFirst();
+                console.log(first);
+                let day = first.getDay(); //요일 알아내기
+                first.addDay(-day);
+                let id = 1;
+                while(true){
+                    let week = [];
+                    for(let i = 0; i < 7; i++){
+                        week.push({date:first.gondr(), number:first.getDate()});
+                        first.addDay(1);
+                    }
+                    console.log(now.getMonth() + 1);
+                    this.list.push({id:id++, week: week});
+                    if(first.getMonth() != now.getMonth()){
+                        break;
+                    }
+                }
+            }
+        }
+    }
 </script>
 
 <style scoped>
-    #calendar {
-        width: 100%;
-        border: 0;
+
+    .now-date {
+        background-color: #FFE0B2;
     }
 
-    .month-box {
-        width: 100%;
+    #dayList {
+        margin-bottom: 40px;
+    }
+
+    #now-day {
+        display: flex;
+        background-color: #4caf50;
+        width: 99.98%;
+    }
+
+    #now-day > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 15%;
         height: 70px;
-        background-color: #66bb6a;
-        font-size: 1.5rem;
-        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
         color: #fff;
+    }
+
+    #now-day > .now-day {
+        width: 70%;
+    }
+
+    .day-row {
+        display:grid;
+        grid-template-columns:repeat(7, 1fr);
+        grid-template-rows:50px;
+        font-size: 1.1rem;
         font-weight: bold;
     }
 
-    #prev i {
-        transform: rotate(180deg);
+    .date-row {
+        margin-top:5px;
+        grid-gap:10px;
+        display:grid;
+        grid-template-columns:repeat(7, 1fr);
+        grid-auto-rows:minmax(100px, auto);
+        padding:5px;
     }
 
-    td {
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        font-size: 20px;
+    .day {
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background-color: #4caf50;
+        color:#fff;
     }
+
+    .item {
+        box-shadow: 2px 2px 1px 1px rgba(0,0,0,0.2);
+        border-radius:0.2rem;
+        padding:10px;
+    }
+
 </style>

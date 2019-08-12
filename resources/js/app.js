@@ -31,7 +31,6 @@ const router = new Router({
 
 Date.prototype.gondr = function() {
     let str = this.toLocaleDateString();
-    console.log(str);
     let arr = str.split(".");
     return arr.filter(x => x != "").map(x => {
         if(x.length >= 4) return x;
@@ -39,6 +38,22 @@ Date.prototype.gondr = function() {
         return dstr.substring(dstr.length - 2);
     }).join("-");
 };
+
+Date.prototype.getFirst = function () {
+    let temp = new Date(this.getFullYear(), this.getMonth(), this.getDate());
+    temp.setDate(1);
+    return temp;
+};
+
+Date.prototype.getLast = function () {
+    let temp = new Date(this.getFullYear(), this.getMonth() + 1, this.getDate());
+    temp.setDate(0);
+    return temp;
+};
+
+Date.prototype.addDay = function (value) {
+    this.setDate(this.getDate() + value);
+}
 
 const app = new Vue({
     el: '#app',
@@ -63,7 +78,7 @@ const app = new Vue({
                         });
                     }
                 }
-            })
+            });
     },
     methods:{
         addTodo(name, date){
